@@ -1,0 +1,79 @@
+# NOTE: update this with your service name
+service: notes-api
+
+# Create an optimized package for our functions
+package:
+  individually: true
+
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin # Load .env as environment variables
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: dev
+  region: us-east-1
+
+  environment:
+    tableName: Notes
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Scan
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:DescribeTable
+      Resource: "arn:aws:dynamodb:us-east-1:*:*"
+
+functions:
+  create:
+    handler: create.main
+    events:
+      - httpApi:
+          path: /notes
+          method: post
+          authorizer:
+            type: aws_iam
+
+  get:
+    handler: get.main
+    events:
+      - httpApi:
+          path: /notes/{id}
+          method: get
+          authorizer:
+            type: aws_iam
+
+  list:
+    handler: list.main
+    events:
+      - httpApi:
+          path: /notes
+          method: get
+          authorizer:
+            type: aws_iam
+
+  update:
+    handler: update.main
+    events:
+      - httpApi:
+          path: /notes/{id}
+          method: put
+          authorizer:
+            type: aws_iam
+
+  delete:
+    handler: delete.main
+    events:
+      - httpApi:
+          path: /notes/{id}
+          method: delete
+          authorizer:
+            type: aws_iam
+
+

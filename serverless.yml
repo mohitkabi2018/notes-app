@@ -34,46 +34,55 @@ functions:
   create:
     handler: create.main
     events:
-      - httpApi:
+      - http:
           path: /notes
           method: post
+          cors: true
           authorizer:
             type: aws_iam
 
   get:
     handler: get.main
     events:
-      - httpApi:
+      - http:
           path: /notes/{id}
           method: get
+          cors: true
           authorizer:
             type: aws_iam
 
   list:
     handler: list.main
     events:
-      - httpApi:
+      - http:
           path: /notes
           method: get
+          cors: true
           authorizer:
             type: aws_iam
 
   update:
     handler: update.main
     events:
-      - httpApi:
+      - http:
           path: /notes/{id}
           method: put
+          cors: true
           authorizer:
             type: aws_iam
 
   delete:
     handler: delete.main
     events:
-      - httpApi:
+      - http:
           path: /notes/{id}
           method: delete
+          cors: true
           authorizer:
             type: aws_iam
+  # Create our resources with separate CloudFormation templates
+resources:
+  # API Gateway Errors
+  - ${file(resources/api-gateway-errors.yml)}
 
 
